@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kestrel Cuts Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE occasion: a proper neighbourhood barber, confident and a bit loud
+   IDEA the shop's own price board and appointment book
+   PICTURE the live booking card, top right, with the striped pole as the page's edge
+   COLOUR charcoal ground, white ink, pole red lead, pole blue as small support
+   TYPE Anton display + Inter text
+   LAYOUT name and status left, booking card right; phone stacks name, booking, details */
+:root{color-scheme:dark;--bg:#141418;--ink:#f2f2f4;--panel:#1f1f26;--line:#33333d;--muted:#a7a7b4;--red:#e0412f;--blue:#4a6ff0}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2{font-family:Anton,Impact,sans-serif;font-weight:400;line-height:1.02;letter-spacing:.01em;margin:0;text-wrap:balance}
+h2{font-size:clamp(32px,4.4vw,48px)}
+h3{margin:0;font-size:18px}
+p{margin:0}
+a{color:inherit}
+.demo-bar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;padding:9px max(5vw,16px);background:#ffcf3a;color:#121826;font-size:14px;font-weight:500}
+.pole{height:14px;background:repeating-linear-gradient(-45deg,var(--red) 0 18px,#fff 18px 36px,var(--blue) 36px 54px,#fff 54px 72px)}
+.band{padding-block:clamp(32px,5vw,64px);padding-inline:max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:40px;align-items:start}
+.hero h1{font-size:clamp(64px,10vw,132px)}
+.tag{font-size:19px;color:#d8d8e0;margin-top:14px;max-width:34ch}
+.status{display:inline-flex;align-items:center;gap:10px;margin-top:22px;padding:8px 14px;border-radius:20px;background:var(--panel);font-weight:600}
+.dot{width:10px;height:10px;border-radius:50%;background:#3ccf6e}
+.dot.closed{background:var(--red)}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:10px;font:600 16px Inter,sans-serif;text-decoration:none;border:2px solid transparent;cursor:pointer}
+.btn.red{background:var(--red);color:#fff}
+.btn.line{border-color:#fff;color:#fff;background:transparent}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ffcf3a;outline-offset:2px}
+.quick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:34px}
+.quick div{padding:14px;border-left:4px solid var(--red);background:var(--panel);border-radius:0 10px 10px 0}
+.quick b{display:block;font-size:22px;font-family:Anton,sans-serif;font-weight:400}
+.quick span{color:var(--muted);font-size:14px}
+.book{background:#fff;color:#16161b;border-radius:18px;padding:22px;box-shadow:0 18px 40px rgba(0,0,0,.4)}
+.book h2{font-size:34px}
+.book .sub{color:#5b5b68;font-size:14px;margin:4px 0 14px}
+.lbl{font-weight:700;font-size:14px;margin:14px 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:40px;padding:6px 12px;border-radius:10px;border:1.5px solid #d4d4dc;background:#fff;color:#16161b;font:500 14px Inter,sans-serif;cursor:pointer}
+.chip small{display:block;color:#6b6b78;font-size:13px}
+.chip[aria-pressed=true]{background:#16161b;color:#fff;border-color:#16161b}
+.chip[aria-pressed=true] small{color:#c9c9d2}
+.chip:disabled{text-decoration:line-through;opacity:.4;cursor:not-allowed}
+.days{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
+.days .chip{flex:none;scroll-snap-align:start;text-align:center;min-width:64px}
+.times{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px}
+.times .chip{white-space:nowrap}
+.sum{margin-top:16px;padding:12px;border-radius:10px;background:#f2f2f6;font-size:15px}
+.sum b{white-space:nowrap}
+.book .btn{width:100%;margin-top:12px}
+.done{text-align:center;padding:24px 6px}
+.done .tick{width:64px;height:64px;margin:0 auto 12px;border-radius:50%;background:#3ccf6e;display:grid;place-items:center}
+.done p{margin-top:8px;color:#4b4b58}
+.prices{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 48px;margin-top:28px}
+.price{display:flex;align-items:baseline;gap:10px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.price span:nth-child(2){flex:1;border-bottom:2px dotted #4a4a56;transform:translateY(-4px)}
+.price b{font-family:Anton,sans-serif;font-weight:400;font-size:24px;white-space:nowrap}
+.price small{display:block;color:var(--muted);font-size:13px}
+.team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
+.barber{padding:20px;border-radius:14px;background:var(--panel)}
+.av{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font:28px Anton,sans-serif;margin-bottom:12px}
+.barber p{color:var(--muted);margin-top:6px}
+.reviews{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
+.rev{padding:20px;border-radius:14px;border:1px solid var(--line)}
+.stars{color:#ffcf3a;letter-spacing:2px}
+.rev p{margin-top:8px}
+.rev .who{color:var(--muted);font-size:14px;margin-top:10px}
+.small{color:var(--muted);font-size:14px;margin-top:10px}
+.visit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px}
+table{border-collapse:collapse;width:100%;margin-top:16px}
+td{padding:10px 0;border-bottom:1px solid var(--line)}
+td:last-child{text-align:right;white-space:nowrap}
+tr.today td{color:#ffcf3a;font-weight:700}
+footer{padding:24px max(5vw,16px) 90px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+@media(max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}.team,.reviews{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media(max-width:600px){.prices,.visit,.team,.reviews{grid-template-columns:minmax(0,1fr)}.quick{grid-template-columns:minmax(0,1fr)}.book{padding:16px}}
+</style>
+</head>
+<body>
+<div class="demo-bar"><span>Demo site by <b data-owner>Your Name</b>. Kestrel Cuts is a fictional business.</span><a href="index.html">← Back to portfolio</a></div>
+<div class="pole" aria-hidden="true"></div>
+
+<header class="band">
+  <div class="wrap hero">
+    <div>
+      <h1>Kestrel Cuts</h1>
+      <p class="tag">Fades, beard trims and hot towel shaves on Smithdown Road, Liverpool.</p>
+      <p class="status" id="status"><span class="dot" id="dot"></span><span id="stxt">Checking hours…</span></p>
+      <div class="ctas">
+        <a class="btn red" href="#booking">Book a cut</a>
+        <a class="btn line" href="tel:01514960418">Call 0151 496 0418</a>
+      </div>
+      <div class="quick">
+        <div><b>From £14</b><span>Kids' cuts under 12</span></div>
+        <div><b>3 barbers</b><span>Walk-ins welcome when free</span></div>
+        <div><b>Card or cash</b><span>Apple Pay and Google Pay too</span></div>
+      </div>
+    </div>
+    <section class="book" id="booking" aria-label="Book an appointment">
+      <div id="bookForm">
+        <h2>Book online</h2>
+        <p class="sub">Pick a service, barber and time. Takes under a minute.</p>
+        <p class="lbl">Service</p><div class="chips" id="svcChips"></div>
+        <p class="lbl">Barber</p><div class="chips" id="barChips"></div>
+        <p class="lbl">Day</p><div class="days" id="dayChips"></div>
+        <p class="lbl">Time</p><div class="times" id="timeChips"></div>
+        <div class="sum" id="sum"></div>
+        <button class="btn red" id="confirm" type="button" disabled>Confirm booking</button>
+      </div>
+      <div class="done" id="done" hidden>
+        <div class="tick"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 12l5 5 9-10"/></svg></div>
+        <h2>You're booked in</h2>
+        <p id="doneTxt"></p>
+        <p>On a live site you'd get a confirmation text now and a reminder the day before. This demo doesn't make a real booking.</p>
+        <button class="btn red" id="again" type="button">Make another booking</button>
+      </div>
+    </section>
+  </div>
+</header>
+
+<main>
+<section class="band" style="background:#1a1a20">
+  <div class="wrap">
+    <h2>Price list</h2>
+    <div class="prices" id="prices"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>The barbers</h2>
+    <div class="team" id="team"></div>
+  </div>
+</section>
+
+<section class="band" style="background:#1a1a20">
+  <div class="wrap">
+    <h2>What customers say</h2>
+    <div class="reviews" id="reviews"></div>
+    <p class="small">Sample reviews for this demo. A live site would pull real reviews from Google.</p>
+  </div>
+</section>
+
+<section class="band" id="visit">
+  <div class="wrap visit">
+    <div>
+      <h2>Find us</h2>
+      <p style="margin-top:14px;font-size:18px">Smithdown Road, Liverpool L15</p>
+      <p class="small">Street parking on the side roads. Bus stops right outside.</p>
+      <div class="ctas"><a class="btn line" href="https://www.google.com/maps/search/Smithdown+Road+Liverpool">Get directions</a></div>
+    </div>
+    <div>
+      <h2>Opening hours</h2>
+      <table><tbody id="hours"></tbody></table>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">Kestrel Cuts · 0151 496 0418 · Demo website built by <span data-owner>Your Name</span></div></footer>
+
+<script src="config.js"></script>
+<script src="bot.js"></script>
+<script>
+{
+  const services = [
+    { n: 'Skin fade', p: 22, m: 40, d: 'Clipper fade to the skin, finished with scissors' },
+    { n: 'Classic cut', p: 18, m: 30, d: 'Clippers and scissors, washed and styled' },
+    { n: 'Scissor cut', p: 20, m: 40, d: 'All scissors, for longer styles' },
+    { n: 'Beard trim and line-up', p: 12, m: 20, d: 'Shaped, lined up with a razor finish' },
+    { n: 'Cut and beard', p: 30, m: 50, d: 'Any cut plus a full beard tidy' },
+    { n: 'Hot towel shave', p: 20, m: 30, d: 'Traditional open-razor shave' },
+    { n: "Kids' cut (under 12)", p: 14, m: 25, d: 'Any style, patient barbers' }
+  ];
+  const barbers = [
+    { n: 'Any barber', s: 'First free chair' },
+    { n: 'Danny', s: 'Fades and designs', c: '#e0412f', bio: 'Twelve years on the clippers. Fades, tapers and hair designs.' },
+    { n: 'Aisha', s: 'Scissor work', c: '#4a6ff0', bio: 'Longer styles, textured crops and curly hair.' },
+    { n: 'Kofi', s: 'Beards and shaves', c: '#ffcf3a', bio: 'Beard shaping and hot towel shaves.' }
+  ];
+  // [open, close] in hours; null = closed. Index 0 = Sunday.
+  const hours = [[10, 15], null, [9, 19], [9, 19], [9, 19], [9, 19], [8, 17]];
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const fmt = h => { const hh = Math.floor(h), mm = Math.round((h - hh) * 60); return `${hh}:${String(mm).padStart(2, '0')}`; };
+  const ampm = h => h === 12 ? '12pm' : h > 12 ? (h - 12) + 'pm' : h + 'am';
+
+  // Status
+  const now = new Date(), today = hours[now.getDay()], hNow = now.getHours() + now.getMinutes() / 60;
+  const open = today && hNow >= today[0] && hNow < today[1];
+  document.getElementById('dot').classList.toggle('closed', !open);
+  let nextOpen = '';
+  for (let i = 1; i <= 7 && !open; i++) { const d = (now.getDay() + i) % 7; if (!today || hNow >= today[1] || i > 0) { if (hours[d]) { nextOpen = `${i === 1 ? 'tomorrow' : dayNames[d]} at ${ampm(hours[d][0])}`; break; } } }
+  if (today && hNow < today[0]) nextOpen = `today at ${ampm(today[0])}`;
+  document.getElementById('stxt').textContent = open ? `Open now · closes ${ampm(today[1])}` : `Closed now · opens ${nextOpen}`;
+
+  document.getElementById('hours').innerHTML = [1, 2, 3, 4, 5, 6, 0].map(d =>
+    `<tr class="${d === now.getDay() ? 'today' : ''}"><td>${dayNames[d]}</td><td>${hours[d] ? `${ampm(hours[d][0])} – ${ampm(hours[d][1])}` : 'Closed'}</td></tr>`).join('');
+
+  document.getElementById('prices').innerHTML = services.map(s =>
+    `<div class="price"><span>${s.n}<small>${s.d} · ${s.m} min</small></span><span></span><b>£${s.p}</b></div>`).join('');
+  document.getElementById('team').innerHTML = barbers.slice(1).map(b =>
+    `<div class="barber"><div class="av" style="background:${b.c};color:${b.c === '#ffcf3a' ? '#16161b' : '#fff'}">${b.n[0]}</div><h3>${b.n}</h3><p>${b.bio}</p></div>`).join('');
+  const reviews = [
+    ['Best skin fade I have had in Liverpool. Booked online at 11pm and was in the chair next morning.', 'Sample review · Jordan'],
+    ['Took my son for his first proper haircut. Aisha was so patient with him.', 'Sample review · Priya'],
+    ['Hot towel shave with Kofi is the best twenty quid I spend every month.', 'Sample review · Mark']
+  ];
+  document.getElementById('reviews').innerHTML = reviews.map(([t, w]) =>
+    `<div class="rev"><div class="stars" aria-label="5 out of 5">★★★★★</div><p>${t}</p><p class="who">${w}</p></div>`).join('');
+
+  // Booking
+  const st = { svc: 0, bar: 0, day: null, time: null };
+  const days = [];
+  for (let i = 0; days.length < 7 && i < 14; i++) { const d = new Date(now); d.setDate(now.getDate() + i); if (hours[d.getDay()]) days.push(d); }
+  st.day = 0;
+  const hash = str => { let h = 7; for (const c of str) h = (h * 31 + c.charCodeAt(0)) % 1000003; return h; };
+  const chip = (txt, sub, pressed, attrs) => `<button type="button" class="chip" aria-pressed="${pressed}" ${attrs}>${txt}${sub ? `<small>${sub}</small>` : ''}</button>`;
+  const render = () => {
+    document.getElementById('svcChips').innerHTML = services.map((s, i) => chip(s.n, `£${s.p}`, st.svc === i, `data-k="svc" data-v="${i}"`)).join('');
+    document.getElementById('barChips').innerHTML = barbers.map((b, i) => chip(b.n, b.s, st.bar === i, `data-k="bar" data-v="${i}"`)).join('');
+    document.getElementById('dayChips').innerHTML = days.map((d, i) => chip(i === 0 && d.toDateString() === now.toDateString() ? 'Today' : d.toLocaleDateString('en-GB', { weekday: 'short' }), d.getDate() + ' ' + d.toLocaleDateString('en-GB', { month: 'short' }), st.day === i, `data-k="day" data-v="${i}"`)).join('');
+    const d = days[st.day], [o, c] = hours[d.getDay()], isToday = d.toDateString() === now.toDateString();
+    const slots = [];
+    for (let h = o; h <= c - 0.5; h += 0.5) {
+      const taken = (isToday && h <= hNow + 0.5) || hash(d.toDateString() + h + st.bar) % 3 === 0;
+      slots.push(`<button type="button" class="chip" aria-pressed="${st.time === h}" data-k="time" data-v="${h}" ${taken ? 'disabled aria-label="' + fmt(h) + ' taken"' : ''}>${fmt(h)}</button>`);
+    }
+    document.getElementById('timeChips').innerHTML = slots.join('') || '<p>No times left today. Pick another day.</p>';
+    const s = services[st.svc];
+    document.getElementById('sum').innerHTML = st.time === null
+      ? `<b>${s.n}</b> · ${s.m} min · <b>£${s.p}</b><br>Choose a time to continue.`
+      : `<b>${s.n}</b> with <b>${barbers[st.bar].n}</b><br><b>${d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</b> at <b>${fmt(st.time)}</b> · <b>£${s.p}</b>, pay in the shop`;
+    document.getElementById('confirm').disabled = st.time === null;
+  };
+  document.getElementById('bookForm').addEventListener('click', e => {
+    const b = e.target.closest('.chip'); if (!b || b.disabled) return;
+    const k = b.dataset.k, v = +b.dataset.v;
+    st[k] = v;
+    if (k !== 'time') st.time = null;
+    render();
+  });
+  document.getElementById('confirm').addEventListener('click', () => {
+    const d = days[st.day], s = services[st.svc];
+    const ref = 'KC-' + String(hash(d.toDateString() + st.time + st.svc)).slice(-4).padStart(4, '0');
+    document.getElementById('doneTxt').textContent = `${s.n} with ${barbers[st.bar].n}, ${d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} at ${fmt(st.time)}. Reference ${ref}.`;
+    document.getElementById('bookForm').hidden = true; document.getElementById('done').hidden = false;
+  });
+  document.getElementById('again').addEventListener('click', () => {
+    st.time = null; render(); document.getElementById('done').hidden = true; document.getElementById('bookForm').hidden = false;
+  });
+  render();
+
+  mountBot({ name: 'Kestrel Cuts', color: '#e0412f',
+    greeting: "Hiya! I can help with prices, opening times and bookings. What do you need?",
+    fallback: "I'm not sure about that one. Give the shop a ring on 0151 496 0418 and the lads will sort you out.",
+    faqs: [
+      { q: 'Are you open now?', keys: ['open', 'hours', 'close', 'time'], a: document.getElementById('stxt').textContent + '.\nTue–Fri 9am–7pm, Sat 8am–5pm, Sun 10am–3pm. Closed Mondays.' },
+      { q: 'How much is a skin fade?', keys: ['fade', 'price', 'cost', 'how much', '£'], a: 'Skin fade is £22, classic cut £18, cut and beard £30. Kids under 12 are £14.' },
+      { q: 'Do you take walk-ins?', keys: ['walk', 'without', 'queue', 'wait'], a: "Yes, when a chair is free. Booking online guarantees your slot, especially Fridays and Saturdays." },
+      { q: 'Can I book?', keys: ['book', 'appointment', 'slot'], a: 'You can book online in under a minute using the booking card at the top of this page.' },
+      { q: 'Where do I park?', keys: ['park', 'car', 'bus', 'where', 'address'], a: "We're on Smithdown Road, L15. Free street parking on the side roads, and buses stop right outside." }
+    ] });
+}
+</script>
+</body>
+</html>

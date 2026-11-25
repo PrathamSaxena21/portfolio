@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tidewater Plumbing Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE practical and urgent-ready: a trade that turns up
+   IDEA the liveried van and the job sheet
+   PICTURE the yellow-and-blue van side-on, ready to roll, on the hero band
+   COLOUR van yellow field, deep blue support, water blue as a small accent
+   TYPE Barlow Condensed 800 display + Inter text
+   LAYOUT title and call button left, van right; phone stacks title, van, call button */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#0e1424);--ink:light-dark(#121826,#eef2f8);--muted:light-dark(#4a5568,#a9b4c6);--sun:#ffcf3a;--blue:light-dark(#1d3f8f,#5b84e6);--deep:#1d3f8f;--water:#3aa0ff;--soft:light-dark(#f4f6fa,#161e33);--line:light-dark(#dfe4ec,#273250)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:"Barlow Condensed",Inter,sans-serif;font-weight:800;line-height:1;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1{font-size:clamp(44px,6.6vw,78px)}
+h2{font-size:clamp(34px,4.4vw,50px)}
+h3{font-size:24px;font-weight:700}
+p{margin:0}
+a{color:inherit}
+.demo-bar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;padding:9px max(5vw,16px);background:var(--deep);color:#fff;font-size:14px;font-weight:500}
+.band{padding-block:clamp(32px,5vw,64px);padding-inline:max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+.hero{background:var(--sun);color:#121826}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:24px 40px;align-items:center}
+.brand{font:800 22px "Barlow Condensed",sans-serif;display:flex;align-items:center;gap:8px;margin-bottom:22px}
+.brand svg{width:30px;height:30px}
+.hero .lead{font-size:19px;margin-top:14px;max-width:40ch}
+.call{display:inline-flex;flex-direction:column;margin-top:24px;padding:14px 26px;border-radius:14px;background:#121826;color:#fff;text-decoration:none}
+.call small{font-size:14px;color:#ffcf3a;font-weight:600}
+.call b{font:800 clamp(28px,4vw,38px) "Barlow Condensed",sans-serif;white-space:nowrap}
+.alt{display:inline-block;margin:16px 0 0 4px;font-weight:600}
+.van{width:100%;height:auto;display:block}
+.wheel{transform-box:fill-box;transform-origin:center}
+.trust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;background:#121826;color:#fff}
+.trust div{padding:18px max(2vw,16px);border-right:1px solid #2a3142;display:flex;gap:12px;align-items:center}
+.trust div:last-child{border-right:0}
+.trust svg{width:28px;height:28px;flex:none;stroke:var(--sun);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.jobs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
+.job{padding:22px;border-radius:14px;border:1px solid var(--line);border-top:6px solid var(--blue);display:flex;flex-direction:column;gap:8px}
+.job p{color:var(--muted)}
+.job .from{margin-top:auto;font:800 26px "Barlow Condensed",sans-serif;color:var(--blue)}
+.small{color:var(--muted);font-size:14px;margin-top:12px}
+.area{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
+.pc{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.pc input{flex:1 1 180px;font:600 20px Inter,sans-serif;text-transform:uppercase;padding:12px 14px;min-height:54px;border-radius:12px;border:2px solid var(--ink);background:var(--bg);color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 24px;border-radius:12px;font:600 16px Inter,sans-serif;border:0;cursor:pointer;text-decoration:none}
+.btn.blue{background:var(--deep);color:#fff}
+.btn.ink{background:#121826;color:#fff}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--water);outline-offset:2px}
+.res{margin-top:14px;padding:14px 16px;border-radius:12px;font-weight:600;display:none}
+.res.yes{display:block;background:color-mix(in srgb,#2fbf71 18%,var(--bg));}
+.res.no{display:block;background:color-mix(in srgb,#ff7b6b 22%,var(--bg))}
+.chipgrid{display:flex;flex-wrap:wrap;gap:6px}
+.chipgrid span{padding:6px 10px;border-radius:8px;background:var(--soft);font-weight:600;font-size:14px;white-space:nowrap}
+.quote{background:var(--soft)}
+.qgrid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:40px;align-items:start}
+form{display:grid;gap:14px;padding:26px;border-radius:18px;background:var(--bg);border:1px solid var(--line)}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+label{display:grid;gap:6px;font-weight:500;font-size:15px}
+input,select,textarea{font:16px Inter,sans-serif;padding:12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);min-height:48px;width:100%}
+textarea{min-height:100px;resize:vertical}
+fieldset{border:0;padding:0;margin:0}
+legend{font-weight:500;font-size:15px;margin-bottom:6px}
+.urg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.urg label{display:flex;align-items:center;gap:8px;min-height:48px;padding:0 12px;border-radius:10px;border:1.5px solid var(--line);cursor:pointer;font-size:15px}
+.urg input{width:18px;height:18px;min-height:0;margin:0;accent-color:var(--deep);flex:none}
+.urg label:has(input:checked){border-color:var(--blue);background:color-mix(in srgb,var(--blue) 10%,var(--bg))}
+.drop{display:grid;place-items:center;gap:6px;min-height:110px;padding:16px;border:2px dashed var(--line);border-radius:12px;text-align:center;cursor:pointer}
+.drop input{position:absolute;width:1px;height:1px;opacity:0;min-height:0;padding:0}
+.drop:focus-within{outline:3px solid var(--water)}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px}
+.thumbs img{width:72px;height:72px;object-fit:cover;border-radius:8px}
+.err{color:#c62f1e;font-size:14px}
+.ok{padding:24px;border-radius:16px;background:var(--bg);border-left:6px solid var(--sun)}
+.ok p{margin-top:8px}
+.steps li{margin-bottom:12px}
+.steps{padding-left:20px;margin:18px 0 0;color:var(--muted)}
+.steps b{color:var(--ink)}
+footer{padding:24px max(5vw,16px) 90px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+@media(max-width:900px){.jobs{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.qgrid,.area{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:720px){.hero .wrap{grid-template-columns:minmax(0,1fr)}.trust{grid-template-columns:minmax(0,1fr)}.trust div{border-right:0;border-bottom:1px solid #2a3142}}
+@media(max-width:600px){.jobs,.row2{grid-template-columns:minmax(0,1fr)}.urg{grid-template-columns:minmax(0,1fr)}form{padding:18px}}
+</style>
+</head>
+<body>
+<div class="demo-bar"><span>Demo site by <b data-owner>Your Name</b>. Tidewater Plumbing is a fictional business.</span><a href="index.html">← Back to portfolio</a></div>
+
+<header class="band hero">
+  <div class="wrap">
+    <div>
+      <p class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1d3f8f" d="M12 2s7 8 7 13a7 7 0 0 1-14 0c0-5 7-13 7-13z"/></svg>Tidewater Plumbing &amp; Heating</p>
+      <h1>Leaks, boilers and bathrooms sorted across Liverpool</h1>
+      <p class="lead">Local, tidy and on time. Fixed quotes before any work starts, and emergency call-outs day and night.</p>
+      <a class="call" href="tel:01514960732"><small>24/7 emergency line</small><b>0151 496 0732</b></a><br>
+      <a class="alt" href="#quote">Not urgent? Get a free quote →</a>
+    </div>
+    <svg class="van" viewBox="0 0 560 300" role="img" aria-label="Illustration of the Tidewater Plumbing van">
+      <ellipse cx="280" cy="268" rx="250" ry="14" fill="#121826" opacity=".18"/>
+      <path fill="#ffffff" d="M40 90q0-30 30-30h270q20 0 34 14l70 66q22 6 40 10q30 8 30 36v54q0 14-14 14H52q-12 0-12-12z"/>
+      <path fill="#dfe4ec" d="M40 210h444v24q0 14-14 14H52q-12 0-12-12z"/>
+      <path fill="#1d3f8f" d="M40 150h450q0 14 0 30H40z"/>
+      <path fill="#a9cdf5" d="M352 82q8 0 14 6l58 54h-82q-6 0-6-6V88q0-6 6-6z"/>
+      <path fill="#ffffff" opacity=".35" d="M352 82h14l-20 60h-10V88q0-6 6-6z"/>
+      <rect x="440" y="160" width="28" height="12" rx="4" fill="#ffcf3a"/>
+      <text x="70" y="118" font-family="Barlow Condensed,sans-serif" font-weight="800" font-size="34" fill="#1d3f8f">TIDEWATER</text>
+      <text x="70" y="142" font-family="Inter,sans-serif" font-weight="600" font-size="15" fill="#121826">Plumbing &amp; Heating</text>
+      <text x="70" y="172" font-family="Barlow Condensed,sans-serif" font-weight="800" font-size="20" fill="#ffcf3a">0151 496 0732</text>
+      <line x1="330" y1="92" x2="330" y2="240" stroke="#c7ced9" stroke-width="2"/>
+      <rect x="296" y="190" width="22" height="6" rx="3" fill="#8b93a3"/>
+      <g class="wheel" id="w1"><circle cx="130" cy="246" r="34" fill="#121826"/><circle cx="130" cy="246" r="15" fill="#c7ced9"/><path d="M130 234v24M118 246h24" stroke="#8b93a3" stroke-width="4"/></g>
+      <g class="wheel" id="w2"><circle cx="410" cy="246" r="34" fill="#121826"/><circle cx="410" cy="246" r="15" fill="#c7ced9"/><path d="M410 234v24M398 246h24" stroke="#8b93a3" stroke-width="4"/></g>
+      <rect x="70" y="40" width="200" height="12" rx="4" fill="#8b93a3"/>
+      <rect x="80" y="30" width="180" height="8" rx="4" fill="#c7ced9"/>
+    </svg>
+  </div>
+</header>
+<div class="trust">
+  <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM9 13l2 2 4-4"/></svg><span>Fixed written quote before any work starts</span></div>
+  <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/></svg><span>Arrival window texted to you, no all-day waits</span></div>
+  <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg><span>12-month guarantee on our workmanship</span></div>
+</div>
+
+<main>
+<section class="band">
+  <div class="wrap">
+    <h2>What we fix</h2>
+    <div class="jobs" id="jobs"></div>
+    <p class="small">Sample prices for this demo site. Final price confirmed in your written quote.</p>
+  </div>
+</section>
+
+<section class="band" style="padding-top:0">
+  <div class="wrap area">
+    <div>
+      <h2>Do we cover your area?</h2>
+      <p class="small" style="font-size:16px">Type the start of your postcode, such as L15 or CH43.</p>
+      <form class="pc" id="pcf" style="padding:0;border:0;background:none" novalidate>
+        <input id="pc" aria-label="Postcode" placeholder="e.g. L15 4LP" autocomplete="postal-code" maxlength="8">
+        <button class="btn blue" type="submit">Check</button>
+      </form>
+      <p class="res" id="pcres" role="status"></p>
+    </div>
+    <div>
+      <h3 style="margin-bottom:12px">Areas we cover</h3>
+      <div class="chipgrid" id="areas"></div>
+    </div>
+  </div>
+</section>
+
+<section class="band quote" id="quote">
+  <div class="wrap qgrid">
+    <div>
+      <h2>Get a free quote</h2>
+      <p class="small" style="font-size:17px">Photos help us price the job accurately, often without a visit.</p>
+      <ol class="steps">
+        <li><b>Send the details.</b> Tell us what's wrong and add a photo or two.</li>
+        <li><b>Get your price.</b> We reply with a fixed quote, usually the same day.</li>
+        <li><b>Pick a time.</b> We text you a two-hour arrival window.</li>
+      </ol>
+    </div>
+    <div id="qwrap">
+      <form id="qf" novalidate>
+        <div class="row2">
+          <label for="q-name">Name<input id="q-name" autocomplete="name"></label>
+          <label for="q-phone">Phone<input id="q-phone" type="tel" autocomplete="tel"></label>
+        </div>
+        <div class="row2">
+          <label for="q-pc">Postcode<input id="q-pc" autocomplete="postal-code"></label>
+          <label for="q-type">Type of job<select id="q-type"></select></label>
+        </div>
+        <fieldset><legend>How urgent is it?</legend>
+          <div class="urg">
+            <label><input type="radio" name="urg" value="today">Today</label>
+            <label><input type="radio" name="urg" value="this week" checked>This week</label>
+            <label><input type="radio" name="urg" value="flexible">Flexible</label>
+          </div>
+        </fieldset>
+        <label for="q-desc">What's the problem?<textarea id="q-desc" placeholder="e.g. Kitchen tap dripping and water under the sink"></textarea></label>
+        <label class="drop" for="q-photos"><input id="q-photos" type="file" accept="image/*" multiple><b>Add photos</b><span class="small" style="margin:0">Tap to choose from your phone</span></label>
+        <div class="thumbs" id="thumbs"></div>
+        <p class="err" id="qerr" role="alert"></p>
+        <button class="btn ink" type="submit">Send for a free quote</button>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+<footer><div class="wrap">Tidewater Plumbing &amp; Heating · Office Mon–Sat 8am–6pm · Emergencies 24/7 · Demo website built by <span data-owner>Your Name</span></div></footer>
+
+<script src="config.js"></script>
+<script src="bot.js"></script>
+<script>
+{
+  const jobs = [
+    ['Emergency call-out', 'Burst pipes, major leaks and no water. Day or night.', 'from £95'],
+    ['Leaks and taps', 'Dripping taps, leaking pipes, toilets that keep running.', 'from £80'],
+    ['Boiler service', 'Annual safety check and service to keep it efficient.', '£85'],
+    ['Boiler repair', 'No heating or hot water, error codes, pressure problems.', 'from £120'],
+    ['Radiators', 'New radiators, valves, bleeding and power flushing.', 'from £180'],
+    ['Bathroom fitting', 'Full bathroom installs, showers and wet rooms.', 'Free quote']
+  ];
+  document.getElementById('jobs').innerHTML = jobs.map(([t, d, p]) => `<div class="job"><h3>${t}</h3><p>${d}</p><span class="from">${p}</span></div>`).join('');
+  document.getElementById('q-type').innerHTML = jobs.map(j => `<option>${j[0]}</option>`).join('') + '<option>Something else</option>';
+
+  const covered = { L: [1, 38], CH: [41, 49] };
+  const areas = [];
+  for (let i = covered.L[0]; i <= covered.L[1]; i++) areas.push('L' + i);
+  for (let i = covered.CH[0]; i <= covered.CH[1]; i++) areas.push('CH' + i);
+  document.getElementById('areas').innerHTML = areas.map(a => `<span>${a}</span>`).join('');
+
+  document.getElementById('pcf').addEventListener('submit', e => {
+    e.preventDefault();
+    const raw = document.getElementById('pc').value.toUpperCase().replace(/\s+/g, '');
+    const out = document.getElementById('pcres');
+    const m = raw.match(/^([A-Z]{1,2})(\d{1,2})/);
+    out.className = 'res';
+    if (!m) { out.classList.add('no'); out.textContent = 'That doesn\'t look like a UK postcode. Try something like L15 or CH43.'; return; }
+    const [, area, num] = m, n = +num, r = covered[area];
+    if (r && n >= r[0] && n <= r[1]) { out.classList.add('yes'); out.textContent = `Yes, we cover ${area}${n}. Call 0151 496 0732 or send a quote request below.`; }
+    else { out.classList.add('no'); out.textContent = `Sorry, ${area}${n} is outside our usual area. Call us anyway for emergencies and we'll do our best.`; }
+  });
+
+  const photos = document.getElementById('q-photos');
+  photos.addEventListener('change', () => {
+    const t = document.getElementById('thumbs'); t.replaceChildren();
+    [...photos.files].slice(0, 6).forEach(f => { const img = document.createElement('img'); img.src = URL.createObjectURL(f); img.alt = 'Photo: ' + f.name; t.appendChild(img); });
+  });
+
+  document.getElementById('qf').addEventListener('submit', e => {
+    e.preventDefault();
+    const v = id => document.getElementById(id).value.trim();
+    const miss = [];
+    if (!v('q-name')) miss.push('your name');
+    if (!/^[0-9 +()]{10,}$/.test(v('q-phone'))) miss.push('a phone number');
+    if (!v('q-desc')) miss.push('a short description');
+    const err = document.getElementById('qerr');
+    if (miss.length) { err.textContent = 'Please add ' + miss.join(', ') + '.'; return; }
+    const urg = document.querySelector('input[name=urg]:checked').value;
+    const box = document.createElement('div'); box.className = 'ok'; box.setAttribute('role', 'status');
+    const h = document.createElement('h3'); h.textContent = `Thanks, ${v('q-name')}. Request received.`;
+    const p1 = document.createElement('p'); p1.textContent = `${v('q-type')}, needed ${urg}${photos.files.length ? `, with ${photos.files.length} photo${photos.files.length > 1 ? 's' : ''}` : ''}. We'll text a fixed quote to ${v('q-phone')}.`;
+    const p2 = document.createElement('p'); p2.textContent = urg === 'today' ? 'Since it is urgent, please also ring 0151 496 0732 now so we can get someone out quickly.' : 'Most quotes go out the same working day.';
+    const p3 = document.createElement('p'); p3.className = 'small'; p3.textContent = 'This is a demo, so nothing was sent.';
+    box.append(h, p1, p2, p3);
+    document.getElementById('qwrap').replaceChildren(box);
+  });
+
+  mountBot({ name: 'Tidewater Plumbing', color: '#1d3f8f', focus: '#ffcf3a',
+    greeting: "Hi, I'm the Tidewater assistant. Got a leak, a boiler problem or need a price?",
+    fallback: "Best to speak to one of the team about that. Call 0151 496 0732, or use the quote form with a photo.",
+    faqs: [
+      { q: 'I have a leak right now', keys: ['leak', 'burst', 'flood', 'water everywhere', 'emergency'], a: 'Turn off your stopcock first. It is usually under the kitchen sink. Then call our 24/7 line on 0151 496 0732 and we will get someone out.' },
+      { q: 'My boiler stopped working', keys: ['boiler', 'heating', 'hot water', 'radiator', 'pressure'], a: 'Check the pressure gauge is between 1 and 1.5 bar and try a reset. If it is still off, boiler repairs start from £120. Call or send a quote request.' },
+      { q: 'Do you cover my area?', keys: ['area', 'cover', 'postcode', 'wirral', 'where'], a: 'We cover Liverpool L1–L38 and Wirral CH41–CH49. Use the postcode checker on this page to be sure.' },
+      { q: 'How much do you charge?', keys: ['price', 'cost', 'charge', 'how much', '£', 'quote'], a: 'Leak repairs start from £80 and a boiler service is £85. You always get a fixed written quote before any work starts.' }
+    ] });
+}
+</script>
+</body>
+</html>
